@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NodeTube</title>
+    <link rel="import" href="node_modules/xel/xel.min.html">
+    <link rel="stylesheet" href="nodetube/css/photon.min.css">
+    <link rel="stylesheet" href="node_modules/xel/stylesheets/material.theme.css">
+    <style media="screen">
+    * {
+      box-sizing: border-box;
+    }
+    html,body{
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      padding: 0px;
+    }
+
+    #sidebar {
+      padding: 0px;
+      overflow-y: auto;
+    }
+
+    #content {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-flow: row wrap;
+      justify-content: space-around;
+      align-items: flex-start;
+      height: 400px;
+    }
+
+    .col-md-3 {
+      padding: 0px;
+      width: auto;
+      width: 32.5%;
+      margin-bottom: 10px;
+      color: #222222;
+      font-size: .8em;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,.075);
+    }
+
+    #maincontent {
+      padding-top:4px;
+      text-align: center;
+    }
+
+    .col-md-3 .video-thumbnail, .col-md-3 .video-thumbnail img {
+      margin-bottom: 0px;
+      padding-bottom: 0px;
+      cursor: pointer;
+    }
+
+    .col-md-3 h4, .col-md-3 a {
+      margin: 0px;
+      color: #222222;
+    }
+
+    .col-md-3 h4 {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 5px;
+      text-align: left;
+    }
+
+    .col-md-3 h4 {
+      font-size: 0.9em;
+      font-weight: 400;
+      margin: 0px 5px 0px 5px;
+    }
+
+    .col-md-3 .video-info {
+      margin: 0px;
+      padding: 0px 0px 5px 0px;
+      text-align: left;
+    }
+
+    .pane-sm {
+        max-width: 190px;
+        min-width: 190px;
+    }
+
+    .favourite-icon {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      z-index: 1000;
+      font-size: 30px;
+      color: #ffffff;
+    }
+
+    .red {
+      color: #CD0000;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    ::-webkit-scrollbar {
+          width: 3px;
+    } /* this targets the default scrollbar (compulsory) */
+
+    /*
+    ::-webkit-scrollbar-track {
+          background-color: #b46868;
+    } /* the new scrollbar will have a flat appearance with the set background color */
+
+    /*
+    ::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+    } /* this will style the thumb, ignoring the track */
+    /*
+    ::-webkit-scrollbar-button {
+          background-color: #7c2929;
+    } /* optionally, you can style the top and the bottom buttons (left and right for horizontal bars) */
+
+    /*
+    ::-webkit-scrollbar-corner {
+          background-color: black;
+    }*/
+    x-menubar {
+      height: 50px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+    x-input {
+      max-width: 300px;
+      min-width: 300px;
+    }
+    x-button {
+      box-shadow: none;
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="window" id="nodetube">
+
+      <!-- .toolbar-header sits at the top of your app
+      <header class="toolbar toolbar-header">
+        <h1 class="title">NodeTube</h1>
+      </header> -->
+      <x-menubar id="toolbar">
+      </x-menubar>
+
+      <!-- Your app's content goes inside .window-content -->
+      <div class="window-content">
+        <x-dialog></x-dialog>
+
+        <div class="pane-group">
+          <div class="pane-sm" id="sidebar">
+
+          </div>
+
+          <div class="pane" id="maincontent">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
