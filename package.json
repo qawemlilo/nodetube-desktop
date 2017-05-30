@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package": "npm run package:mac && npm run package:installer",
+    "nuke": "rm -rf ../releases/*",
+    "package": "npm run nuke && npm run package:mac && npm run package:installer",
     "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=../releases --icon=./app/assets/img/icons/mac/icon.icns --osx-sign.identity='Developer ID Application: GitHub'",
     "package:installer": "electron-installer-dmg ../releases/NodeTube-darwin-x64/NodeTube.app ../releases/NodeTube"
   },
@@ -30,6 +31,7 @@
   "dependencies": {
     "backbone": "^1.3.3",
     "bluebird": "^3.5.0",
+    "electron-context-menu": "^0.9.1",
     "jquery": "^3.2.1",
     "moment": "^2.18.1",
     "nedb": "^1.8.0",

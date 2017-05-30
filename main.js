@@ -26,6 +26,15 @@ function createRootDir() {
 
 createRootDir();
 
+
+require('electron-context-menu')({
+    prepend: (params, browserWindow) => [{
+        label: 'Rainbow',
+        // Only show it when right-clicking images
+        visible: params.mediaType === 'input'
+    }]
+});
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({

@@ -30,8 +30,16 @@ module.exports = {
 function getRootDir() {
   let home = (process.platform === 'win32') ? 'USERPROFILE' : 'HOME';
   let rootDir = process.env[home];
+  let homeDir = '';
 
-  return path.join(rootDir, '.nodetube');
+  if (isProduction()) {
+    homeDir = '.nodetubelive';
+  }
+  else {
+    homeDir = '.nodetube';
+  }
+
+  return path.join(rootDir, homeDir);
 }
 
 
