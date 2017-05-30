@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require('path');
-const APP_VERSION = require('./package.json').version;
+const APP_VERSION = require('../package.json').version;
 
 
 module.exports = {

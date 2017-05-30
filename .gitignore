@@ -33,3 +33,5 @@ videos
 # App packaged
 dist
 release
+out
+NodeTube.dmg

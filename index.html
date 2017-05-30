@@ -2,9 +2,9 @@
 <html>
   <head>
     <title>NodeTube</title>
-    <link rel="import" href="node_modules/xel/xel.min.html">
-    <link rel="stylesheet" href="nodetube/css/photon.min.css">
-    <link rel="stylesheet" href="node_modules/xel/stylesheets/material.theme.css">
+    <link rel="import" href="./node_modules/xel/xel.min.html">
+    <link rel="stylesheet" href="./app/assets/css/photon.min.css">
+    <link rel="stylesheet" href="./node_modules/xel/stylesheets/material.theme.css">
     <style media="screen">
     * {
       box-sizing: border-box;
@@ -147,28 +147,20 @@
   <body>
     <div class="window" id="nodetube">
 
-      <!-- .toolbar-header sits at the top of your app
-      <header class="toolbar toolbar-header">
-        <h1 class="title">NodeTube</h1>
-      </header> -->
-      <x-menubar id="toolbar">
-      </x-menubar>
+      <!-- .toolbar-header sits at the top of your app -->
+      <x-menubar id="toolbar"></x-menubar>
 
       <!-- Your app's content goes inside .window-content -->
       <div class="window-content">
         <x-dialog></x-dialog>
 
         <div class="pane-group">
-          <div class="pane-sm" id="sidebar">
-
-          </div>
-
-          <div class="pane" id="maincontent">
-          </div>
+          <div class="pane-sm" id="sidebar"></div>
+          <div class="pane" id="maincontent"></div>
         </div>
       </div>
     </div>
 
-    <script src="renderer.js"></script>
+    <script src="./renderer.js"></script>
   </body>
 </html>

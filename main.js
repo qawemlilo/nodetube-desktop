@@ -4,8 +4,8 @@ const {app, ipcMain, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
-const download = require('./download');
-const config = require('./config');
+const download = require('./app/lib/download');
+const config = require('./app/config');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -39,7 +39,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname,'index.html'),
     protocol: 'file:',
     slashes: true
   }));

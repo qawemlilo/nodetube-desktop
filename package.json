@@ -4,9 +4,12 @@
   "description": "Watch and autosave YouTube videos",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "npm run package:mac && npm run package:installer",
+    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=../releases --icon=./app/assets/img/icons/mac/icon.icns --osx-sign.identity='Developer ID Application: GitHub'",
+    "package:installer": "electron-installer-dmg ../releases/NodeTube-darwin-x64/NodeTube.app ../releases/NodeTube"
   },
-  "repository": "https://github.com/Fcmam5/pin-my-youtube-video-js",
+  "repository": "https://github.com/qawemlilo/nodetube-desktop",
   "keywords": [
     "Youtube",
     "video player",
@@ -19,23 +22,19 @@
   "license": "MIT",
   "devDependencies": {
     "dialog": "^0.2.0",
-    "electron": "^1.4.1",
+    "electron": "^1.6.10",
+    "electron-packager": "^8.7.0",
     "remote": "^0.2.6",
     "yarn": "^0.21.3"
   },
   "dependencies": {
     "backbone": "^1.3.3",
     "bluebird": "^3.5.0",
-    "bootstrap": "^3.3.7",
-    "chromecasts": "^1.9.0",
-    "i": "^0.3.5",
     "jquery": "^3.2.1",
-    "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "nedb": "^1.8.0",
     "npm": "^4.6.1",
     "request": "^2.81.0",
-    "video.js": "^5.19.2",
     "xel": "0.0.17",
     "ytdl-core": "^0.14.0"
   }

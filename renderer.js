@@ -3,23 +3,22 @@
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
-const Database = require('./database');
-
+const Database = require('./app/database');
 
 
 window.$ = window.jQuery = window.require('jquery');
 window.Backbone = window.require('backbone');
-Backbone.sync = window.require('./backbone.sync')(Database);
+Backbone.sync = window.require('./app/lib/backbone.sync')(Database);
 
 // models
-const { Video, VideosCollection } = require('./nodetube/js/models/Video');
+const { Video, VideosCollection } = require('./app/models/Video');
 
 //views
-const VideosList = require('./nodetube/js/views/VideosList');
-const PlayList = require('./nodetube/js/views/PlayList');
-const ToolBar = require('./nodetube/js/views/ToolBar');
-const Menu = require('./nodetube/js/views/Menu');
-const NodeTube = require('./nodetube/js/views/NodeTube');
+const VideosList = require('./app/views/VideosList');
+const PlayList = require('./app/views/PlayList');
+const ToolBar = require('./app/views/ToolBar');
+const Menu = require('./app/views/Menu');
+const NodeTube = require('./app/views/NodeTube');
 
 
 Database.getAll()
@@ -64,5 +63,4 @@ Database.getAll()
   });
 
 })
-.catch(function () {
-});
+.catch(function () {});

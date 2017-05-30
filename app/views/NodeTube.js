@@ -1,7 +1,7 @@
 'use strict';
 
 const Backbone = require('backbone');
-const PlayerView = require('../views/Player');
+const PlayerView = require('./Player');
 
 const Menu = Backbone.View.extend({
 

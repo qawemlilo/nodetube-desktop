@@ -3,8 +3,8 @@
 const ytdl = require('ytdl-core');
 const fs = require('fs');
 const path = require('path');
-const DB = require('./database');
-const config = require('./config');
+const DB = require('../database');
+const config = require('../config');
 const VideoImages = require('./images');
 
 function parseInfo(info) {
@@ -40,7 +40,7 @@ function downloadImages(newDoc, imagesDir) {
 
     DB.update(newDoc._id, {iurlsd: newPath})
     .then(function () {
-      console.log('updated iurlsd: ', newPath)
+      //console.log('updated iurlsd: ', newPath)
     })
     .catch(function (error) {
       console.error(error)
@@ -52,7 +52,7 @@ function downloadImages(newDoc, imagesDir) {
 
     DB.update(newDoc._id, {iurlmq: newPath})
     .then(function () {
-      console.log('updated iurlmq: ', newPath)
+      //console.log('updated iurlmq: ', newPath)
     })
     .catch(function (error) {
       console.error(error)
@@ -64,7 +64,7 @@ function downloadImages(newDoc, imagesDir) {
 
     DB.update(newDoc._id, {iurlhq: newPath})
     .then(function () {
-      console.log('updated iurlhq: ', newPath)
+      //console.log('updated iurlhq: ', newPath)
     })
     .catch(function (error) {
       console.error(error)
@@ -76,7 +76,7 @@ function downloadImages(newDoc, imagesDir) {
 
     DB.update(newDoc._id, {iurlmaxres: newPath})
     .then(function () {
-      console.log('updated iurlmaxres: ', newPath)
+      //console.log('updated iurlmaxres: ', newPath)
     })
     .catch(function (error) {
       console.error(error)
