@@ -1,7 +1,8 @@
 "use strict";
 
 const path = require('path');
-const APP_VERSION = require('../package.json').version;
+const packageJSON = require('../package.json');
+const APP_VERSION = packageJSON.version;
 
 
 module.exports = {
@@ -10,6 +11,7 @@ module.exports = {
   VIDEOS_PATH: getVideosDir(),
 
   APP_VERSION:  APP_VERSION,
+  APP_NAME:  packageJSON.productName,
   IS_PRODUCTION: isProduction(),
 
   ANNOUNCEMENT_URL: '',
@@ -22,7 +24,8 @@ module.exports = {
   GITHUB_URL: 'https://github.com/qawemlilo/nodetube-desktop',
   GITHUB_URL_ISSUES: 'https://github.com/qawemlilo/nodetube-desktop/issues',
   HOME_PAGE_URL: 'https://github.com/qawemlilo/nodetube-desktop',
-  UPDATES_URL: 'https://github.com/qawemlilo/nodetube-desktop/releases'
+  UPDATES_URL: 'https://github.com/qawemlilo/nodetube-desktop/releases',
+  UPDATES_API: 'https://nodetube.ragingflame.co.za/updates/latest'
 };
 
 
@@ -33,7 +36,7 @@ function getRootDir() {
   let homeDir = '';
 
   if (isProduction()) {
-    homeDir = '.nodetubelive';
+    homeDir = '.nodetube';
   }
   else {
     homeDir = '.nodetube';

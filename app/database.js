@@ -1,6 +1,6 @@
 'use strict'
 
-let Database = null;
+
 const NEDB = require('nedb');
 const path = require('path');
 const Promise = require('bluebird');
@@ -8,12 +8,10 @@ const config = require('./config');
 
  module.exports = function () {
 
-   if (!Database) {
-     Database = new NEDB({
-       filename: path.join(config.STORAGE_ROOT, 'videos.db'),
-       autoload: true
-     });
-   }
+   const Database = new NEDB({
+     filename: path.join(config.STORAGE_ROOT, 'videos.db'),
+     autoload: true
+   });
 
    const DB = {
      getAll: function () {
@@ -59,6 +57,10 @@ const config = require('./config');
 
 
      update: function (id, attrs) {
+       if (attrs.playing) {
+         attrs.playing = false;
+       }
+
        return new Promise(function(resolve, reject){ //Or Q.defer() in Q
          Database.update({_id: id}, { $set: attrs }, function (err, items) {
            if (err) {

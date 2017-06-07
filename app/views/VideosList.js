@@ -13,10 +13,8 @@ const VideosList = Backbone.View.extend({
       this.render();
     });
 
-    this.collection.on('add', (model, collection, options) => {
-      this.$el.append(new VideoView({
-        model: model
-      }).render().el);
+    this.collection.on('sync', (model, collection, options) => {
+      this.render();
     });
 
     this.render();

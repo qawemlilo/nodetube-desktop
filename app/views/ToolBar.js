@@ -24,6 +24,8 @@ const ToolBar = Backbone.View.extend({
         <x-icon name="play-arrow"></x-icon>
         <x-label>YouTube url</x-label>
       </x-input>
+
+
     `;
 
     return tmpl;

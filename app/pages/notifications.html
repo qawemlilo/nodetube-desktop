@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NodeTube Notifications</title>
+    <link rel="import" href="../../node_modules/xel/xel.min.html">
+    <link rel="stylesheet" href="../assets/css/photon.min.css">
+    <link rel="stylesheet" href="../../node_modules/xel/stylesheets/material.theme.css">
+    <style media="screen">
+/*
+    .header-arrow {
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      margin-left: -5px;
+      height: 10px;
+      width: 10px;
+      transform: rotate(45deg);
+      background-color: #e8e6e8;
+    }
+    .window {
+      position: absolute;
+      top: 5px;
+    }*/
+    </style>
+  </head>
+  <body>
+    <div class="window">
+      <header class="toolbar toolbar-header">
+        <h1 class="title">NodeTube <span class="icon icon-megaphone"></span></h1>
+      </header>
+
+      <div class="window-content">
+        <div class="pane" id="notification-center">
+        </div>
+      </div>
+
+      <footer class="toolbar toolbar-footer">
+        <div class="toolbar-actions">
+          <div class="btn-group pull-right">
+            <button class="btn btn-default js-refresh-action refresh-cache">
+              <span class="icon icon-arrows-ccw js-refresh-action" title="Refresh cache"></span>
+            </button>
+
+            <button class="btn btn-default js-quit-action clear-cache">
+              <span class="icon icon-trash js-quit-action" title="Clear cache"></span>
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="./renderer.js"></script>
+    </script>
+  </body>
+</html>

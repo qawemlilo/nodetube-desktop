@@ -1,6 +1,7 @@
 'use strict';
 
 const Backbone = require('backbone');
+const moment = require('moment');
 
 const LinkView = Backbone.View.extend({
 
@@ -9,11 +10,15 @@ const LinkView = Backbone.View.extend({
   tagName: "li",
 
   template: function (data) {
+    let ago = moment(data.created_at).fromNow();
     return `
-      <img class="media-object pull-left" src="${data.thumbnail_url}" style="width:64px;height:38px">
+      <img class="media-object pull-left" src="${data.iurlsd}" style="width:64px;">
       <div class="media-body">
         <strong>${data.title}</strong>
-        <p>${data.author.name}</p>
+        <p>
+          ${data.author.name}<br>
+          <small><span class="icon icon-clock"></span> ${ago}</small>
+        </p>
       </div>`;
   },
 

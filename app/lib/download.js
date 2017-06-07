@@ -96,6 +96,7 @@ module.exports  = function (url, done) {
 
         filename = 'video_' + Date.now() + '.mp4';
 
+        videoData.watched = false;
         videoData.created_at = Date.now();
         videoData.path = path.join(config.VIDEOS_PATH, filename);
         videoData.favourite = false;
@@ -105,8 +106,6 @@ module.exports  = function (url, done) {
         .then(function (newDoc) {
           // let's create a directory where we'll save images for this video
           let imagesDir = path.join(config.IMAGES_PATH, newDoc._id);
-
-          console.log('imagesDir ', imagesDir)
 
           if (!fs.existsSync(imagesDir)) {
             fs.mkdirSync(imagesDir);

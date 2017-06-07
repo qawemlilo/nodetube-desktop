@@ -1,14 +1,17 @@
 {
   "name": "NodeTube",
-  "version": "1.1.0",
+  "version": "1.2.0",
+  "productName": "NodeTube",
   "description": "Watch and autosave YouTube videos",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "nuke": "rm -rf ../releases/*",
-    "package": "npm run nuke && npm run package:mac && npm run package:installer",
-    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=../releases --icon=./app/assets/img/icons/mac/icon.icns --osx-sign.identity='Developer ID Application: GitHub'",
-    "package:installer": "electron-installer-dmg ../releases/NodeTube-darwin-x64/NodeTube.app ../releases/NodeTube"
+    "nuke": "rm -rf ./build/*",
+    "package": "npm run nuke && npm run package:osx && npm run package:osxdmg",
+    "icons": "electron-icon-maker --input=/Users/qawemlilo/code/youtube/app/assets/tv-icon.png --output=./app/assets/img",
+    "package:osxdmg": "electron-installer-dmg ./build/NodeTube-darwin-x64/NodeTube.app ./build/NodeTube",
+    "package:sign": "electron-osx-sign ./build/NodeTube-darwin-x64/NodeTube.app --type=development",
+    "package:osx": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore='^/builds$' --icon=./app/assets/img/icons/mac/icon.icns --platform=darwin --arch=x64 --sign='Mac Developer: qawemlilo@gmail.com' --overwrite"
   },
   "repository": "https://github.com/qawemlilo/nodetube-desktop",
   "keywords": [
@@ -25,8 +28,7 @@
     "dialog": "^0.2.0",
     "electron": "^1.6.10",
     "electron-packager": "^8.7.0",
-    "remote": "^0.2.6",
-    "yarn": "^0.21.3"
+    "remote": "^0.2.6"
   },
   "dependencies": {
     "backbone": "^1.3.3",

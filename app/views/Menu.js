@@ -22,8 +22,12 @@ const Menu = Backbone.View.extend({
         Home
       </a>
       <a class="nav-group-item" id="menu-favourites">
-        <span class="icon icon-heart red"></span>
+        <span class="icon icon-heart"></span>
         Favourites
+      </a>
+      <a class="nav-group-item" id="menu-recent">
+        <span class="icon icon-clock"></span>
+        Recently added
       </a>
     `;
 

@@ -20,7 +20,7 @@
 
     #sidebar {
       padding: 0px;
-      overflow-y: auto;
+      overflow-y: hidden;
     }
 
     #content {
@@ -36,6 +36,11 @@
       justify-content: space-around;
       align-items: flex-start;
       height: 400px;
+      overflow-y: auto;
+    }
+
+    #sidebar:hover, #sidebar:active, #sidebar:focus {
+      overflow-y: auto;
     }
 
     .col-md-3 {
@@ -52,6 +57,7 @@
     #maincontent {
       padding-top:4px;
       text-align: center;
+      overflow-y: auto;
     }
 
     .col-md-3 .video-thumbnail, .col-md-3 .video-thumbnail img {
@@ -142,6 +148,9 @@
       margin-right: 5px;
       margin-left: 5px;
     }
+    x-progressbar {
+      z-index: 1000;
+    }
     </style>
   </head>
   <body>
@@ -152,7 +161,7 @@
 
       <!-- Your app's content goes inside .window-content -->
       <div class="window-content">
-        <x-dialog></x-dialog>
+        <x-progressbar value="0" max="100" class="hidden progress-bar"></x-progressbar>
 
         <div class="pane-group">
           <div class="pane-sm" id="sidebar"></div>
@@ -162,46 +171,5 @@
     </div>
 
     <script src="./renderer.js"></script>
-    <script>
-    const InputMenu = Menu.buildFromTemplate([{
-            label: 'Undo',
-            role: 'undo',
-        }, {
-            label: 'Redo',
-            role: 'redo',
-        }, {
-            type: 'separator',
-        }, {
-            label: 'Cut',
-            role: 'cut',
-        }, {
-            label: 'Copy',
-            role: 'copy',
-        }, {
-            label: 'Paste',
-            role: 'paste',
-        }, {
-            type: 'separator',
-        }, {
-            label: 'Select all',
-            role: 'selectall',
-        },
-    ]);
-
-    document.body.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        let node = e.target;
-
-        while (node) {
-            if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
-                InputMenu.popup(remote.getCurrentWindow());
-                break;
-            }
-            node = node.parentNode;
-        }
-    });
-    </script>
   </body>
 </html>

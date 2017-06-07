@@ -33,7 +33,6 @@ const Menu = Backbone.View.extend({
     this.Menu = opts.views.Menu;
     this.Player = opts.views.Player;
     this.collection = opts.collection;
-    this.favourites = opts.FavouritesList;
 
     let handleVideoPLay = (model, val, opts) =>  {
 
@@ -45,20 +44,17 @@ const Menu = Backbone.View.extend({
         this.currentVideo = model;
 
         this.renderVideo(model);
+        this.view = 'playing';
       }
     };
 
     this.collection.on('change:playing', handleVideoPLay);
-    this.favourites.on('change:playing', handleVideoPLay);
-    this.favourites.on('change:favourite', (model, val, opts) => {
+    this.collection.on('change:favourite', (model, val, opts) => {
       if (!model.attributes.favourite) {
         model.destroy();
       }
     });
 
-    this.on('progress', (progress) => {
-      this.renderLoading(progress);
-    });
 
     this.renderToolBar();
     this.renderHome();
@@ -80,13 +76,14 @@ const Menu = Backbone.View.extend({
         if (view === 'menu-favourites') {
           this.renderFavourites();
         }
+        if (view === 'menu-recent') {
+          this.renderRecent();
+        }
       });
     }
     else if (view === 'playlist') {
-      let collection = (this.view === 'favourites') ? this.favourites : this.collection;
-
       this.currentSidebar = new this.PlayList({
-          collection: collection
+          collection: this.collection
       });
     }
 
@@ -99,7 +96,6 @@ const Menu = Backbone.View.extend({
 
     toolbar.on('download', (url) => {
       this.trigger('download', url);
-      this.renderLoading();
     });
 
     toolbar.on('gohome', (url) => {
@@ -113,8 +109,7 @@ const Menu = Backbone.View.extend({
 
 
   renderLoading: function (progress = 0) {
-    this.currentView.remove();
-    this.$('#maincontent').html(`<x-progressbar value="${progress}" max="100"></x-progressbar>`);
+    this.$('.progress-bar').val(progress);
     return this;
   },
 
@@ -142,38 +137,35 @@ const Menu = Backbone.View.extend({
 
 
   renderHome: function () {
-    if (this.currentView) {
-      this.currentView.remove();
+    if (this.view === 'favourites' || this.view === 'recent') {
+      this.collection.fetch();
+    }
+    else {
+      if (this.currentView) {
+        this.currentView.remove();
+      }
+
+      this.currentView = new this.VideosList({
+        collection: this.collection
+      });
+
+      this.$('#maincontent').html(this.currentView.el);
+      this.renderSidebar('menu');
     }
 
-    this.currentView = new this.VideosList({
-      collection: this.collection
-    });
-
-    this.collection.fetch({sort: true});
-
-    this.$('#maincontent').html(this.currentView.el);
     this.view = 'home';
-
-    this.renderSidebar('menu');
   },
 
 
   renderFavourites: function () {
-
-    if (this.currentView) {
-      this.currentView.remove();
-    }
-
-    this.currentView = new this.VideosList({
-      collection: this.favourites
-    });
-
-    this.favourites.fetch({favourite: true});
-
-    this.$('#maincontent').html(this.currentView.el);
-
+    this.collection.getFavourites();
     this.view = 'favourites';
+  },
+
+
+  renderRecent: function () {
+    this.collection.getRecent();
+    this.view = 'recent';
   }
 });
 

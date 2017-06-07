@@ -27,11 +27,11 @@ const Player = Backbone.View.extend({
         <source src="${model.path}" type="video/mp4">
         Your browser does not support HTML5 video.
       </video>
-      <h4 style="margin:0px;font-size:16px;margin-left:5px;margin-right:5px;">${model.author.name} - ${model.title}</h4>
+      <h4 title="${model.author.name} - ${model.title}" style="margin:0px;font-size:14px;margin-left:5px;margin-right:5px;margin-bottom:5px;word-wrap:break-word;line-height:100%;">${model.author.name} - ${model.title}</h4>
       `;
     },
 
-    
+
     initialize: function () {
       this.render();
     },
@@ -39,6 +39,8 @@ const Player = Backbone.View.extend({
 
     render: function() {
       this.$el.html(this.template(this.model.attributes));
+      this.model.set('watched', true);
+      this.model.save();
       return this;
     },
 

@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = function (Database) {
+
    let sync = function (method, model, options) {
     let resp;
     let opts = {};
@@ -15,6 +16,7 @@ module.exports = function (Database) {
         break;
       case "create":
         resp = Database.create(model.attributes);
+        Database.persistence.compactDatafile();
         break;
       case "update":
         resp = Database.update(model.id, model.changedAttributes());
@@ -26,6 +28,7 @@ module.exports = function (Database) {
 
     if (resp) {
       resp.then(function (data) {
+        //Database.persistence.compactDatafile();
         if (options && options.success) {
           options.success.call(model, data, options);
         }

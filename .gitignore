@@ -33,5 +33,10 @@ videos
 # App packaged
 dist
 release
+build
 out
 NodeTube.dmg
+
+*.secret
+
+AppleID.developerprofile

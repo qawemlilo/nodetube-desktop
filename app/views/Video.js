@@ -13,11 +13,11 @@ const VideoView = Backbone.View.extend({
 
       return `
         <div class="video-thumbnail">
-          <img src="${model.thumbnail_url}" style="width:100%" />
+          <img src="${model.iurlsd}" style="width:100%" />
         </div>
         <div class="video-info">
           <h4 title="${model.title}">${model.title}</h4>
-          <h4 title="${model.title}"><span class="icon icon-clock"></span> ${ago} <span class="icon icon-star-empty pull-right"></span></h4>
+          <h4 title="${model.title}"><span class="icon icon-clock"></span> ${ago}</h4>
         </div>`;
     },
 
