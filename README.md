@@ -1,5 +1,4 @@
 <h1 align="center">
-  <br>
   <a href="https://github.com/qawemlilo/nodetube-desktop"><img src="https://raw.githubusercontent.com/qawemlilo/nodetube-desktop/master/app/assets/tv-icon.png" alt="NodeTube" width="200"></a>
   <br>
   NodeTube Desktop
