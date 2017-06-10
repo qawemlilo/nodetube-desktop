@@ -10,8 +10,8 @@
     "package": "npm run nuke && npm run package:osx && npm run package:osxdmg",
     "icons": "electron-icon-maker --input=/Users/qawemlilo/code/youtube/app/assets/tv-icon.png --output=./app/assets/img",
     "package:osxdmg": "electron-installer-dmg ./build/NodeTube-darwin-x64/NodeTube.app ./build/NodeTube",
-    "package:sign": "electron-osx-sign ./build/NodeTube-darwin-x64/NodeTube.app --type=development",
-    "package:osx": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore='^/builds$' --icon=./app/assets/img/icons/mac/icon.icns --platform=darwin --arch=x64 --sign='Mac Developer: qawemlilo@gmail.com' --overwrite"
+    "package:sign": "electron-osx-sign ./build/NodeTube-darwin-x64/NodeTube.app",
+    "package:osx": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore={./build,./node_modules/electron-osx-sign} --icon=./app/assets/img/icons/mac/icon.icns --platform=darwin --arch=x64 --sign='Mac Developer: qawemlilo@gmail.com (Y82W7MPY89)' --overwrite"
   },
   "repository": "https://github.com/qawemlilo/nodetube-desktop",
   "keywords": [
@@ -27,6 +27,7 @@
   "devDependencies": {
     "dialog": "^0.2.0",
     "electron": "^1.6.10",
+    "electron-osx-sign": "^0.4.6",
     "electron-packager": "^8.7.0",
     "remote": "^0.2.6"
   },
@@ -34,6 +35,7 @@
     "backbone": "^1.3.3",
     "bluebird": "^3.5.0",
     "electron-context-menu": "^0.9.1",
+    "electron-settings": "^3.1.1",
     "jquery": "^3.2.1",
     "moment": "^2.18.1",
     "nedb": "^1.8.0",

@@ -22,8 +22,6 @@ Storage.prototype.remove = function(key) {
 
 const DB_NAME = 'NodeTubeDownloads';
 
-console.log(DB_NAME);
-
 const Download = Backbone.Model.extend({
   defaults: {
     src: "",
@@ -48,7 +46,9 @@ const DownloadView = Backbone.View.extend({
 
 
     events: {
-      "click": "play"
+      "click": "play",
+      "mouseover": "highlight",
+      "mouseout": "removeHighlight"
     },
 
 
@@ -66,7 +66,7 @@ const DownloadView = Backbone.View.extend({
     template: function (data) {
       let activity = data.progress === 100 ? 'Download complete!' : 'Downloading....';
       return `
-      <img class="media-object pull-left" src="${data.src}" style="width:64px;">
+      <img class="media-object pull-left" src="${data.src}" style="width:64px;height:48px" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='">
       <div class="media-body">
         <strong>${data.title}</strong>
         <p class="activity">${activity}</p>
@@ -83,6 +83,16 @@ const DownloadView = Backbone.View.extend({
 
     play: function() {
       this.model.trigger('play', this.model.get('_id'));
+    },
+
+
+    highlight: function(e) {
+      this.$el.addClass('active');
+    },
+
+
+    removeHighlight: function(e) {
+      this.$el.removeClass('active');
     }
 });
 
@@ -160,13 +170,6 @@ $('.refresh-cache').on('click', function () {
     collection.trigger('refresh');
 });
 
-$('li.list-group-item').on('mouseover', function () {
-  $(this).addClass('active');
-})
-.on('mouseout', function () {
-  $(this).removeClass('active') ;
-});
-
 ipcRenderer.on('info', function (event, info) {
   collection.add(new Download({
     id: info.uid,
@@ -185,7 +188,7 @@ ipcRenderer.on('progress', function (event, data) {
 
 
 ipcRenderer.on('error', function (event, data) {
-  console.log(data);
+  console.error(data);
 });
 
 ipcRenderer.on('complete', function (event, data) {

@@ -42,6 +42,10 @@ Database.getAll()
     ipcRenderer.send('download', url);
   });
 
+  nodetube.on('open-settings', function (url) {
+    ipcRenderer.send('open-settings');
+  });
+
   ipcRenderer.on('play', function (event, uid) {
 
     let model = vidoescollection.get(uid);
@@ -54,9 +58,17 @@ Database.getAll()
   ipcRenderer.on('complete', function (event, data) {
     Database.create(data)
     .then(function () {
-      vidoescollection.fetch();
+      vidoescollection.fetch({
+        success: (collection, response, options) => {
+          if (vidoescollection.filteredModels) {
+            vidoescollection.origModels = collection.clone().models;
+          }
+
+          vidoescollection.pager();
+        }
+      });
     })
-    .then(function (error) {
+    .catch(function (error) {
       console.error(error)
     })
   });

@@ -3,15 +3,22 @@
 const path = require('path');
 const packageJSON = require('../package.json');
 const APP_VERSION = packageJSON.version;
-
+const settings = require('electron-settings');
+const VIDEO_QUALITY = settings.has('app.video_quality') ? settings.get('app.video_quality') : 18;
 
 module.exports = {
   STORAGE_ROOT: getRootDir(),
   IMAGES_PATH: getImagesDir(),
   VIDEOS_PATH: getVideosDir(),
 
+  VIDEOS_PATH_OG: path.join(getRootDir(), 'videos'),
+
+  VIDEO_QUALITY: VIDEO_QUALITY,
+
   APP_VERSION:  APP_VERSION,
   APP_NAME:  packageJSON.productName,
+  APP_COPYRIGHT: 'Copyright © 2017 Raging Flame Solutions',
+
   IS_PRODUCTION: isProduction(),
 
   ANNOUNCEMENT_URL: '',
@@ -19,13 +26,14 @@ module.exports = {
   CRASH_REPORT_URL: '',
 
   APP_FILE_ICON: '',
-  APP_ICON: '',
+  APP_ICON: path.join(__dirname, 'assets', 'img', 'icons', 'mac', 'icon.icns'),
 
   GITHUB_URL: 'https://github.com/qawemlilo/nodetube-desktop',
   GITHUB_URL_ISSUES: 'https://github.com/qawemlilo/nodetube-desktop/issues',
   HOME_PAGE_URL: 'https://github.com/qawemlilo/nodetube-desktop',
   UPDATES_URL: 'https://github.com/qawemlilo/nodetube-desktop/releases',
-  UPDATES_API: 'https://nodetube.ragingflame.co.za/updates/latest'
+  UPDATES_API: 'https://nodetube.ragingflame.co.za/updates/latest',
+  CRASH_REPORT_URL: 'https://nodetube.ragingflame.co.za/crash-report'
 };
 
 
@@ -52,6 +60,10 @@ function getImagesDir() {
 
 
 function getVideosDir() {
+  if (settings.has('app.videos_dir')) {
+    return settings.get('app.videos_dir');
+  }
+
   return path.join(getRootDir(), 'videos');
 }
 

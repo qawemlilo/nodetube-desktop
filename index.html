@@ -27,10 +27,6 @@
       padding: 0;
       margin: 0;
       list-style: none;
-      display: -webkit-box;
-      display: -moz-box;
-      display: -ms-flexbox;
-      display: -webkit-flex;
       display: flex;
       -webkit-flex-flow: row wrap;
       justify-content: space-around;
@@ -156,9 +152,26 @@
   <body>
     <div class="window" id="nodetube">
 
+      <x-dialog>
+        <main>
+          <h3>New Release Available</h3>
+          <p>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</p>
+        </main>
+
+        <footer>
+          <x-button id="agree-button" skin="flat">
+            <x-label>Cancel</x-label>
+          </x-button>
+
+          <x-button toggled id="disagree-button" skin="flat">
+            <x-label>Download</x-label>
+          </x-button>
+        </footer>
+      </x-dialog>
+
+
       <!-- .toolbar-header sits at the top of your app -->
       <x-menubar id="toolbar"></x-menubar>
-
       <!-- Your app's content goes inside .window-content -->
       <div class="window-content">
         <x-progressbar value="0" max="100" class="hidden progress-bar"></x-progressbar>

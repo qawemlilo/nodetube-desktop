@@ -13,7 +13,7 @@ const VideoView = Backbone.View.extend({
 
       return `
         <div class="video-thumbnail">
-          <img src="${model.iurlsd}" style="width:100%" />
+          <img src="${model.iurlsd}" style="width:100%" onerror="this.onerror=null;this.width=196;this.height=147;this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='"/>
         </div>
         <div class="video-info">
           <h4 title="${model.title}">${model.title}</h4>

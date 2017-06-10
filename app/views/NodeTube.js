@@ -105,6 +105,10 @@ const Menu = Backbone.View.extend({
       }
       this.renderHome();
     });
+
+    toolbar.on('open-settings', (url) => {
+      this.trigger('open-settings');
+    });
   },
 
 

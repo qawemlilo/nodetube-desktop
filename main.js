@@ -4,14 +4,18 @@ const {app, ipcMain, BrowserWindow, Menu, shell, dialog, autoUpdater, Tray} = re
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
+const request = require('request');
 const download = require('./app/lib/download');
 const config = require('./app/config');
+const crashReporter = require('./app/crash-reporter')
+const settings = require('electron-settings');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let tray;
-let window;
+let notificationsWindow;
+let settingsWindow;
 
 
 function createRootDir() {
@@ -45,6 +49,7 @@ function createWindow () {
     center: true,
     fullscreenable: true,
     resizable: false,
+    show: false,
     autoHideMenuBar: true
   });
 
@@ -65,20 +70,89 @@ function createWindow () {
     mainWindow = null;
   });
 
-  createTray()
-  createNotificationWindow()
+  mainWindow.on('ready-to-show', function() {
+    mainWindow.show();
+    mainWindow.focus();
+  });
 
+  createTray();
   loadMainMenu();
+  checkForUpdates();
+}
 
-  // Create the Application's main menu
 
-  //checkForUpdates();
+function createNotificationWindow() {
+
+  notificationsWindow = new BrowserWindow({
+    width: 400,
+    height: 450,
+    show: false,
+    frame: false,
+    fullscreenable: false,
+    resizable: false,
+    transparent: true,
+    webPreferences: {
+      // Prevents renderer process code from not running when window is
+      // hidden
+      backgroundThrottling: false
+    }
+  })
+
+  notificationsWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'app', 'pages','notifications.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+  // Hide the window when it loses focus
+  notificationsWindow.on('blur', () => {
+    if (!notificationsWindow.webContents.isDevToolsOpened()) {
+      notificationsWindow.hide()
+    }
+  })
+}
+
+
+function createSettingsWindow () {
+  if (settingsWindow) {
+    settingsWindow.focus();
+    return;
+  }
+
+  // Create the browser window.
+  settingsWindow = new BrowserWindow({
+    title: "Preferences",
+    width: 400,
+    height: 450,
+    center: true,
+    fullscreenable: false,
+    resizable: false
+  });
+
+  settingsWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'app', 'pages','settings.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+
+  settingsWindow.setAlwaysOnTop(true);
+
+  // Emitted when the window is closed.
+  settingsWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    settingsWindow = null;
+  });
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', function () {
+  createWindow();
+  createNotificationWindow();
+});
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -87,6 +161,10 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.once('will-finish-launching', function () {
+  crashReporter.init();
 })
 
 app.on('activate', function () {
@@ -95,6 +173,10 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
+
+  if (!notificationsWindow) {
+    createNotificationWindow();
+  }
 });
 
 
@@ -102,38 +184,36 @@ ipcMain.on('download', (event, url) => {
   let globalInfo = null;
   let prev = 0;
 
+  showWindow();
+
   let video = download(url, function (error, doc) {
 
     if (error && globalInfo) {
-      window.webContents.send('error', {
+      notificationsWindow.webContents.send('error', {
         id: globalInfo.uid,
         error: error
       });
     }
     else {
-      window.webContents.send('complete', {
+      notificationsWindow.webContents.send('complete', {
         id: globalInfo.uid,
         _id: doc._id
       });
 
       mainWindow.webContents.send('complete', doc);
     }
-
-    console.log('complete 2')
   });
 
 
 
   video.on('info', function(info, data) {
-    showWindow();
-
     globalInfo = {
       uid: info.uid || info.video_id,
       title: info.title,
       iurlsd: info.iurlsd
     };
 
-    window.webContents.send('info', globalInfo);
+    notificationsWindow.webContents.send('info', globalInfo);
   });
 
   video.on('progress', function(chunkLength, downloaded, total) {
@@ -141,7 +221,7 @@ ipcMain.on('download', (event, url) => {
     if (globalInfo && cur > prev) {
       prev = cur;
 
-      window.webContents.send('progress', {
+      notificationsWindow.webContents.send('progress', {
         id: globalInfo.uid,
         progress: cur
       });
@@ -163,11 +243,41 @@ ipcMain.on('show-window', () => {
 });
 
 
+ipcMain.on('set-videos-dir', (e, val) => {
+  settings.set('app.videos_dir', val);
+});
+
+ipcMain.on('open-settings', (e) => {
+  createSettingsWindow();
+});
+
+
+ipcMain.on('set-video-quality', (e, val) => {
+  settings.set('app.video_quality', val);
+});
+
+ipcMain.on('select-dir', (event) => {
+  let dir = dialog.showOpenDialog(settingsWindow, {
+    properties: ['openDirectory']
+  });
+
+  if (dir && Array.isArray(dir)) {
+    settings.set('app.videos_dir', dir[0]);
+
+    event.sender.send('new-dir', dir[0]);
+  }
+});
+
+
+
+
+
 function loadMainMenu() {
   let template = [{
       label: "Application",
       submenu: [
           { label: "About Application", click: () => { shell.openExternal(config.HOME_PAGE_URL) } },
+          { label: "Preferences", click: () => createSettingsWindow() },
           { label: "Support", click: () => { shell.openExternal(config.GITHUB_URL_ISSUES) } },
           { label: `Check for updates (current: v${config.APP_VERSION})`, click: () => { shell.openExternal(config.UPDATES_URL) } },
           { type: "separator" },
@@ -188,7 +298,7 @@ function loadMainMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-const createTray = () => {
+function createTray() {
   if (tray) return;
 
   tray = new Tray(path.join(__dirname,'app', 'assets', 'img', 'icons', 'png', '16x16.png'))
@@ -198,95 +308,85 @@ const createTray = () => {
     toggleWindow()
 
     // Show devtools when command clicked
-    if (window && window.isVisible() && process.defaultApp && event.metaKey) {
-      window.openDevTools({mode: 'detach'})
+    if (notificationsWindow && notificationsWindow.isVisible() && process.defaultApp && event.metaKey) {
+      notificationsWindow.openDevTools({mode: 'detach'})
     }
   });
   tray.setToolTip(config.APP_NAME);
 }
 
 
-const getWindowPosition = () => {
-  const windowBounds = window.getBounds()
+function getWindowPosition() {
+  const windowBounds = notificationsWindow.getBounds()
   const trayBounds = tray.getBounds()
 
   // Center window horizontally below the tray icon
-  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
+  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
 
   // Position window 4 pixels vertically below the tray icon
-  const y = Math.round(trayBounds.y + trayBounds.height + 4)
+  const y = Math.round(trayBounds.y + trayBounds.height);
 
   return {x: x, y: y}
 }
 
-const createNotificationWindow = () => {
-
-  window = new BrowserWindow({
-    width: 300,
-    height: 450,
-    show: false,
-    frame: false,
-    fullscreenable: false,
-    resizable: false,
-    transparent: true,
-    webPreferences: {
-      // Prevents renderer process code from not running when window is
-      // hidden
-      backgroundThrottling: false
-    }
-  })
-  window.loadURL(`file://${path.join(__dirname, 'app', 'pages', 'notifications.html')}`)
-
-  // Hide the window when it loses focus
-  window.on('blur', () => {
-    if (!window.webContents.isDevToolsOpened()) {
-      window.hide()
-    }
-  })
-}
 
 const toggleWindow = () => {
-  if (window && window.isVisible()) {
-    window.hide()
+  if (notificationsWindow && notificationsWindow.isVisible()) {
+    notificationsWindow.hide();
   } else {
-    showWindow()
+    showWindow();
   }
 }
 
-const showWindow = () => {
+function showWindow() {
   if (!mainWindow) {
     createWindow();
   }
 
-  const position = getWindowPosition()
-  window.setPosition(position.x, position.y, false)
-  window.show()
-  window.focus()
+  let position = getWindowPosition();
+  notificationsWindow.setPosition(position.x, position.y, false);
+  notificationsWindow.show();
+  notificationsWindow.focus();
 }
+
 
 /*
 function checkForUpdates() {
+  let api = `${config.UPDATES_API}?v=v${config.APP_VERSION}`;
+
+  let options = {
+    url: api,
+    headers: {
+      'User-Agent': 'request'
+    }
+  };
+
+  request(options, function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      let data = JSON.parse(body);
+
+      mainWindow.webContents.send('new-release', data.dmg);
+    }
+  });
+}*/
+
+
+function checkForUpdates() {
   if (config.IS_PRODUCTION && process.platform === 'darwin') {
-
     autoUpdater.setFeedURL(`${config.UPDATES_API}?v=v${config.APP_VERSION}`);
-
     autoUpdater.addListener("update-downloaded", function(event, releaseNotes, releaseName, releaseDate, updateURL) {
       let index = dialog.showMessageBox(mainWindow, {
         type: 'info',
         buttons: ['Restart', 'Later'],
-        title: "Typetalk",
+        title: "New Update",
         message: 'The new version has been downloaded. Please restart the application to apply the updates.',
         detail: releaseName + "\n\n" + releaseNotes
       });
-
       if (index === 1) {
         return false;
       }
-
       autoUpdater.quitAndInstall();
     });
-
-
     autoUpdater.addListener("error", function(error) {});
   }
-};*/
+}

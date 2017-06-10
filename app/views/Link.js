@@ -12,7 +12,7 @@ const LinkView = Backbone.View.extend({
   template: function (data) {
     let ago = moment(data.created_at).fromNow();
     return `
-      <img class="media-object pull-left" src="${data.iurlsd}" style="width:64px;">
+      <img class="media-object pull-left" src="${data.iurlsd}"  style="width:64px;height:48px" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='">
       <div class="media-body">
         <strong>${data.title}</strong>
         <p>

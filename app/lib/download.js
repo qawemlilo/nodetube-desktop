@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const DB = require('../database');
 const config = require('../config');
-const VideoImages = require('./images');
+const images = require('./images');
 
 function parseInfo(info) {
   let data = {
@@ -35,58 +35,36 @@ function downloadImages(newDoc, imagesDir) {
   let iurlhq = newDoc.iurlhq;
   let iurlmaxres = newDoc.iurlmaxres;
 
-  VideoImages(iurlsd, imagesDir, function (error, newPath) {
-    if (error) return console.log(error);
-
-    DB.update(newDoc._id, {iurlsd: newPath})
-    .then(function () {
-      //console.log('updated iurlsd: ', newPath)
-    })
-    .catch(function (error) {
-      console.error(error)
-    });
-  });
-
-  VideoImages(iurlmq, imagesDir, function (error, newPath) {
-    if (error) return console.log(error);
-
-    DB.update(newDoc._id, {iurlmq: newPath})
-    .then(function () {
-      //console.log('updated iurlmq: ', newPath)
-    })
-    .catch(function (error) {
-      console.error(error)
-    });
-  });
-
-  VideoImages(iurlhq, imagesDir, function (error, newPath) {
-    if (error) return console.log(error);
-
-    DB.update(newDoc._id, {iurlhq: newPath})
-    .then(function () {
-      //console.log('updated iurlhq: ', newPath)
-    })
-    .catch(function (error) {
-      console.error(error)
-    });
-  });
-
-  VideoImages(iurlmaxres, imagesDir, function (error, newPath) {
-    if (error) return console.log(error);
-
-    DB.update(newDoc._id, {iurlmaxres: newPath})
-    .then(function () {
-      //console.log('updated iurlmaxres: ', newPath)
-    })
-    .catch(function (error) {
-      console.error(error)
-    });
+  images.download(iurlsd, imagesDir)
+  .then(function (newPath) {
+    return DB.update(newDoc._id, {iurlsd: newPath});
+  })
+  .then(function () {
+    return images.download(iurlmq, imagesDir);
+  })
+  .then(function (newPath) {
+    return DB.update(newDoc._id, {iurlmq: newPath});
+  })
+  .then(function () {
+    return images.download(iurlhq, imagesDir);
+  })
+  .then(function (newPath) {
+    return DB.update(newDoc._id, {iurlhq: newPath});
+  })
+  .then(function () {
+    return images.download(iurlmaxres, imagesDir);
+  })
+  .then(function (newPath) {
+    return DB.update(newDoc._id, {iurlmaxres: newPath});
+  })
+  .catch(function (error) {
+    console.error(error)
   });
 }
 
 module.exports  = function (url, done) {
-
-    let download = ytdl(url, {quality: '18'});
+    console.log('VIDEO_QUALITY ', require('../config').VIDEO_QUALITY)
+    let download = ytdl(url, {quality: require('../config').VIDEO_QUALITY});
     let writeStream = null;
     let filename = '';
 

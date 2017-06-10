@@ -10,7 +10,8 @@ const ToolBar = Backbone.View.extend({
 
   events: {
     "keyup .youtube-input": "handleSearch",
-    "click .home-btn": "goHome"
+    "click .home-btn": "goHome",
+    "click .settings-btn": "openPreferences"
   },
 
 
@@ -25,7 +26,9 @@ const ToolBar = Backbone.View.extend({
         <x-label>YouTube url</x-label>
       </x-input>
 
-
+      <x-button class="settings-btn" skin="iconic" style="margin-left:390px">
+        <x-icon name="settings"></x-icon>
+      </x-button>
     `;
 
     return tmpl;
@@ -54,6 +57,11 @@ const ToolBar = Backbone.View.extend({
 
   goHome: function (e) {
     this.trigger('gohome');
+  },
+
+
+  openPreferences: function (e) {
+    this.trigger('open-settings');
   }
 });
 
