@@ -19,11 +19,11 @@ NodeTube is a desktop app for downloading and watching YouTube videos.
  - ytdl-core  - YouTube downloader
 
 ### Todo
- [] Custom video controls
- [] Tagging - Ability to create tags for video
- [] Create multiple skins that are configurable
- [] Make the UI theme configurable
- [] Ability to cast videos
+ - [] Custom video controls
+ - [] Tagging - Ability to create tags for video
+ - [] Create multiple skins that are configurable
+ - [] Make the UI theme configurable
+ - [] Ability to cast videos
 
 
 
