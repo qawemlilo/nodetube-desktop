@@ -49,11 +49,6 @@ const Menu = Backbone.View.extend({
     };
 
     this.collection.on('change:playing', handleVideoPLay);
-    this.collection.on('change:favourite', (model, val, opts) => {
-      if (!model.attributes.favourite) {
-        model.destroy();
-      }
-    });
 
 
     this.renderToolBar();
@@ -134,28 +129,32 @@ const Menu = Backbone.View.extend({
       model: model
     });
 
-    this.renderSidebar('playlist');
+    if (this.view !== 'playing') {
+      this.renderSidebar('playlist');
+    }
+
+
 
     this.$('#maincontent').html(this.currentView.el);
   },
 
 
   renderHome: function () {
-    if (this.view === 'favourites' || this.view === 'recent') {
-      this.collection.fetch();
+    if (this.currentView) {
+      this.currentView.remove();
     }
-    else {
-      if (this.currentView) {
-        this.currentView.remove();
-      }
 
-      this.currentView = new this.VideosList({
-        collection: this.collection
-      });
+    this.collection.origModels = null;
+    this.collection.filteredModels = null;
 
-      this.$('#maincontent').html(this.currentView.el);
-      this.renderSidebar('menu');
-    }
+    this.currentView = new this.VideosList({
+      collection: this.collection
+    });
+
+    this.$('#maincontent').html(this.currentView.el);
+    this.renderSidebar('menu');
+
+    this.collection.fetch();
 
     this.view = 'home';
   },

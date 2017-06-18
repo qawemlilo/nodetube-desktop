@@ -4,7 +4,6 @@ const request = require('request');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const Promise = require('bluebird');
 
 
 module.exports.download = function (from, pathTo) {

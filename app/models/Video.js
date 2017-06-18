@@ -75,9 +75,7 @@ const VideosCollection = Backbone.Collection.extend({
 
 
   pager: function () {
-    if (!this.origModels) {
-      this.origModels = this.clone().models;
-    }
+    this.origModels = this.clone().models;
 
     if (this.filteredModels) {
       this.models = this.filteredModels;

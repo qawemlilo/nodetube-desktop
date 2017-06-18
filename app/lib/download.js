@@ -6,6 +6,7 @@ const path = require('path');
 const DB = require('../database');
 const config = require('../config');
 const images = require('./images');
+const slugify = require('slugify');
 
 function parseInfo(info) {
   let data = {
@@ -29,57 +30,56 @@ function parseInfo(info) {
 
 
 function downloadImages(newDoc, imagesDir) {
-  // images to be downloaded
-  let iurlsd = newDoc.iurlsd;
-  let iurlmq = newDoc.iurlmq;
-  let iurlhq = newDoc.iurlhq;
-  let iurlmaxres = newDoc.iurlmaxres;
 
-  images.download(iurlsd, imagesDir)
+  let props = {};
+
+  images.download(newDoc.iurlsd, imagesDir)
   .then(function (newPath) {
-    return DB.update(newDoc._id, {iurlsd: newPath});
-  })
-  .then(function () {
-    return images.download(iurlmq, imagesDir);
-  })
-  .then(function (newPath) {
-    return DB.update(newDoc._id, {iurlmq: newPath});
-  })
-  .then(function () {
-    return images.download(iurlhq, imagesDir);
+    props.iurlsd = newPath;
+    return images.download(newDoc.iurlmq, imagesDir);
   })
   .then(function (newPath) {
-    return DB.update(newDoc._id, {iurlhq: newPath});
-  })
-  .then(function () {
-    return images.download(iurlmaxres, imagesDir);
+    props.iurlmq = newPath;
+    return images.download(newDoc.iurlhq, imagesDir);
   })
   .then(function (newPath) {
-    return DB.update(newDoc._id, {iurlmaxres: newPath});
+    props.iurlhq = newPath;
+    return images.download(newDoc.iurlmaxres, imagesDir);
+  })
+  .then(function (newPath) {
+    props.iurlmaxres = newPath;
+    return DB.update(newDoc._id, props);
+  })
+  .then(function (updatedDoc) {
+    console.log('downloadImages done')
   })
   .catch(function (error) {
     console.error(error)
   });
 }
 
-module.exports  = function (url, done) {
-    console.log('VIDEO_QUALITY ', require('../config').VIDEO_QUALITY)
-    let download = ytdl(url, {quality: require('../config').VIDEO_QUALITY});
-    let writeStream = null;
-    let filename = '';
+module.exports  = function (url, opts = {}, done) {
 
-    download.on('info', function (info, data) {
+  let download = ytdl(url, {quality: opts.quality || require('../config').VIDEO_QUALITY});
+  let writeStream = null;
+  let filename = '';
 
-        let videoData = parseInfo(info);
+  download.on('info', function (info, data) {
+    let videoData = parseInfo(info);
 
-        filename = 'video_' + Date.now() + '.mp4';
+    filename = slugify(videoData.title).replace(/[.,\/#!$%\^&\*;:{}=`~'"]/g,"") + '_' + Date.now() + '.mp4';
 
-        videoData.watched = false;
-        videoData.created_at = Date.now();
-        videoData.path = path.join(config.VIDEOS_PATH, filename);
-        videoData.favourite = false;
+    videoData.watched = false;
+    videoData.created_at = Date.now();
+    videoData.path = path.join(opts.path || config.VIDEOS_PATH, filename);
+    videoData.favourite = false;
 
-
+    DB.get({video_id: videoData.video_id})
+    .then(function (docs) {
+      if (docs.length) {
+        done(new Error('Video already exists'));
+      }
+      else {
         DB.create(videoData)
         .then(function (newDoc) {
           // let's create a directory where we'll save images for this video
@@ -107,7 +107,12 @@ module.exports  = function (url, done) {
         .catch(function (error) {
           done(error);
         });
+      }
+    })
+    .catch(function (error) {
+      done(error);
     });
+  });
 
 
     return download;

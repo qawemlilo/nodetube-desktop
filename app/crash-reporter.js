@@ -8,6 +8,7 @@ module.exports.init = function () {
   electron.crashReporter.start({
     companyName: config.APP_NAME,
     productName: config.APP_NAME,
-    submitURL: config.CRASH_REPORT_URL
+    submitURL: config.CRASH_REPORT_URL,
+    uploadToServer: true
   });
 };

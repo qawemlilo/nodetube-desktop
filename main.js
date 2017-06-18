@@ -77,7 +77,7 @@ function createWindow () {
 
   createTray();
   loadMainMenu();
-  checkForUpdates();
+  //checkForUpdates();
 }
 
 
@@ -186,13 +186,15 @@ ipcMain.on('download', (event, url) => {
 
   showWindow();
 
-  let video = download(url, function (error, doc) {
+  let video = download(url, settings.get('app.video_quality'), function (error, doc) {
 
     if (error && globalInfo) {
       notificationsWindow.webContents.send('error', {
         id: globalInfo.uid,
         error: error
       });
+
+      alertError(mainWindow, error.message, url + ' ' + error.message);
     }
     else {
       notificationsWindow.webContents.send('complete', {
@@ -200,7 +202,7 @@ ipcMain.on('download', (event, url) => {
         _id: doc._id
       });
 
-      mainWindow.webContents.send('complete', doc);
+      mainWindow ? mainWindow.webContents.send('complete', doc) : '';
     }
   });
 
@@ -231,11 +233,11 @@ ipcMain.on('download', (event, url) => {
 
 
 ipcMain.on('play', (event, uid) => {
-  if (mainWindow && !mainWindow.isFocused()) {
-    mainWindow.focus();
-  }
+  if (mainWindow) {
+    if (!mainWindow.isFocused()) mainWindow.focus();
 
-  mainWindow.webContents.send('play', uid);
+    mainWindow.webContents.send('play', uid);
+  }
 });
 
 ipcMain.on('show-window', () => {
@@ -349,28 +351,19 @@ function showWindow() {
   notificationsWindow.focus();
 }
 
+function alertError(win, message, detail) {
+  let index = dialog.showMessageBox(win, {
+    type: 'info',
+    buttons: ['Ok'],
+    title: "Error message",
+    message: `${message}`,
+    detail: `${detail}`,
+    icon: path.join(__dirname,'app', 'assets', 'img', 'icons', 'png', '48x48.png')
+  });
+}
+
 
 /*
-function checkForUpdates() {
-  let api = `${config.UPDATES_API}?v=v${config.APP_VERSION}`;
-
-  let options = {
-    url: api,
-    headers: {
-      'User-Agent': 'request'
-    }
-  };
-
-  request(options, function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      let data = JSON.parse(body);
-
-      mainWindow.webContents.send('new-release', data.dmg);
-    }
-  });
-}*/
-
-
 function checkForUpdates() {
   if (config.IS_PRODUCTION && process.platform === 'darwin') {
     autoUpdater.setFeedURL(`${config.UPDATES_API}?v=v${config.APP_VERSION}`);
@@ -389,4 +382,4 @@ function checkForUpdates() {
     });
     autoUpdater.addListener("error", function(error) {});
   }
-}
+}*/

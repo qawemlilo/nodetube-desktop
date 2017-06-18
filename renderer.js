@@ -60,7 +60,7 @@ Database.getAll()
     .then(function () {
       vidoescollection.fetch({
         success: (collection, response, options) => {
-          if (vidoescollection.filteredModels) {
+          if (vidoescollection.origModels) {
             vidoescollection.origModels = collection.clone().models;
           }
 

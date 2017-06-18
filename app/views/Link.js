@@ -2,6 +2,8 @@
 
 const Backbone = require('backbone');
 const moment = require('moment');
+const path = require('path');
+const config = require('../config');
 
 const LinkView = Backbone.View.extend({
 
@@ -11,8 +13,9 @@ const LinkView = Backbone.View.extend({
 
   template: function (data) {
     let ago = moment(data.created_at).fromNow();
+
     return `
-      <img class="media-object pull-left" src="${data.iurlsd}"  style="width:64px;height:48px" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='">
+      <img class="media-object pull-left" src="${data.iurlsd}" data-src="${config.PLACEHOLDER_ICON}"  style="width:64px;height:48px" onerror="this.onerror=null;this.dataset.src">
       <div class="media-body">
         <strong>${data.title}</strong>
         <p>

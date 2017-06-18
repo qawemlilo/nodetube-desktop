@@ -1,16 +1,35 @@
 <h1 align="center">
   <a href="https://github.com/qawemlilo/nodetube-desktop"><img src="https://raw.githubusercontent.com/qawemlilo/nodetube-desktop/master/app/assets/tv-icon.png" alt="NodeTube" width="200"></a>
   <br>
-  NodeTube Desktop
+  NodeTube
   <br>
   <br>
 </h1>
+
+### About
+
+NodeTube is a desktop app for downloading and watching YouTube videos.
+
+### Stack
+ - Electron - Cross platform framework for native platforms
+ - Photon - UI framework
+ - Backbone - UI framework
+ - jQuery - Dom operations
+ - NEDB - embedded database
+ - ytdl-core  - YouTube downloader
+
+### Todo
+ [] Custom video controls
+ [] Tagging - Ability to create tags for video
+ [] Create multiple skins that are configurable
+ [] Make the UI theme configurable
+ [] Ability to cast videos
 
 
 
 #### License (MIT)
 
-Copyright (c) 2017 qawemlilo@gmail.com
+Copyright (c) 2017 Raging Flame <qawemlilo@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

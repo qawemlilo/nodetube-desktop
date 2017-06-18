@@ -57,16 +57,13 @@ const Player = Backbone.View.extend({
 
     favToggle: function(e) {
       let fav = this.model.attributes.favourite ? false : true;
+      let el = this.$('.favourite-icon');
 
       if (fav) {
-        this.$('.favourite-icon')
-        .removeClass('icon-heart-empty')
-        .addClass('icon-heart red');
+        el.removeClass('icon-heart-empty').addClass('icon-heart red');
       }
       else {
-        this.$('.favourite-icon')
-        .removeClass('icon-heart red')
-        .addClass('icon-heart-empty');
+        el.removeClass('icon-heart red').addClass('icon-heart-empty');
       }
 
       this.model.set('favourite', fav);

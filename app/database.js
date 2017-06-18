@@ -3,7 +3,6 @@
 
 const NEDB = require('nedb');
 const path = require('path');
-const Promise = require('bluebird');
 const config = require('./config');
 
  module.exports = function () {
@@ -61,13 +60,13 @@ const config = require('./config');
          attrs.playing = false;
        }
 
-       return new Promise(function(resolve, reject){ //Or Q.defer() in Q
-         Database.update({_id: id}, { $set: attrs }, function (err, items) {
+       return new Promise(function(resolve, reject) { //Or Q.defer() in Q
+         Database.update({_id: id}, { $set: attrs }, {}, function (err, affectedRows, items) {
            if (err) {
              reject(err);
            }
            else {
-             resolve(items);
+             resolve(affectedRows);
            }
          });
        });

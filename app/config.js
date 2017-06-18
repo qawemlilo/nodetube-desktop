@@ -27,6 +27,7 @@ module.exports = {
 
   APP_FILE_ICON: '',
   APP_ICON: path.join(__dirname, 'assets', 'img', 'icons', 'mac', 'icon.icns'),
+  PLACEHOLDER_ICON: path.join(__dirname, 'assets', 'img', 'placeholder.png'),
 
   GITHUB_URL: 'https://github.com/qawemlilo/nodetube-desktop',
   GITHUB_URL_ISSUES: 'https://github.com/qawemlilo/nodetube-desktop/issues',

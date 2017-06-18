@@ -22,7 +22,9 @@ module.exports = function (Database) {
         resp = Database.update(model.id, model.changedAttributes());
         break;
       case "delete":
-        //resp = Database.remove(model.id);
+         if (options.force) {
+           resp = Database.remove(model.id);
+         }
         break;
     }
 
