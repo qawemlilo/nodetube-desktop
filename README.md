@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://github.com/qawemlilo/nodetube-desktop"><img src="https://raw.githubusercontent.com/qawemlilo/nodetube-desktop/master/app/assets/tv-icon.png" alt="NodeTube" width="200"></a>
+  <a href="https://github.com/qawemlilo/nodetube-desktop"><img src="https://raw.githubusercontent.com/qawemlilo/nodetube-desktop/master/app/assets/img/tv-icon.png" alt="NodeTube" width="200"></a>
   <br>
   NodeTube
   <br>
@@ -19,11 +19,11 @@ NodeTube is a desktop app for downloading and watching YouTube videos.
  - ytdl-core  - YouTube downloader
 
 ### Todo
- - [] Custom video controls
- - [] Tagging - Ability to create tags for video
- - [] Create multiple skins that are configurable
- - [] Make the UI theme configurable
- - [] Ability to cast videos
+ - Custom video controls
+ - Tagging - Ability to create tags for video
+ - Create multiple skins that are configurable
+ - Make the UI theme configurable
+ - Ability to cast videos
 
 
 
