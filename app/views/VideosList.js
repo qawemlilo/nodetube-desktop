@@ -9,11 +9,11 @@ const VideosList = Backbone.View.extend({
 
 
   initialize: function () {
-    this.collection.on('reset', (model, collection, options) => {
+    this.listenTo(this.collection, 'reset', (model, collection, options) => {
       this.render();
     });
 
-    this.collection.on('sync', (model, collection, options) => {
+    this.listenTo(this.collection, 'sync', (model, collection, options) => {
       this.render();
     });
 

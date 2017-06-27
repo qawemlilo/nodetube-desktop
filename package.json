@@ -1,17 +1,19 @@
 {
   "name": "NodeTube",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "productName": "NodeTube",
   "description": "Watch and autosave YouTube videos",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "nuke": "rm -rf ./build/*",
-    "package": "npm run nuke && npm run package:osx && npm run package:osxdmg",
+    "package": "npm run nuke && npm run package:osx  && npm run package:win && npm run package:linux && npm run package:osxdmg",
     "icons": "electron-icon-maker --input=/Users/qawemlilo/code/youtube/app/assets/img/tv-icon.png --output=./app/assets/img",
+    "package:osx": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore={./build,./node_modules/electron-osx-sign} --icon=./app/assets/img/icons/mac/icon.icns --platform=darwin --appCategoryType='public.app-category.utilities' --appBundleId='co.za.ragingflame.nodetube' --prune=true --arch=x64 --sign='Mac Developer: qawemlilo@gmail.com (Y82W7MPY89)' --overwrite",
+    "package:win": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore={./build,./node_modules/electron-osx-sign} --icon=./app/assets/img/icons/win/icon.ico --platform=win32 --asar --prune=true --win32metadata.CompanyName='Raging Flame Solutions' --win32metadata.ProductName='NodeTube' --arch=x64 --overwrite",
+    "package:linux": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore={./build,./node_modules/electron-osx-sign} --platform=linux --asar --prune=true --arch=x64 --overwrite",
     "package:osxdmg": "electron-installer-dmg ./build/NodeTube-darwin-x64/NodeTube.app ./build/NodeTube",
-    "package:sign": "electron-osx-sign ./build/NodeTube-darwin-x64/NodeTube.app",
-    "package:osx": "electron-packager . $npm_package_productName --app-version=$npm_package_version --electronVersion=1.6.10 --out=build --ignore={./build,./node_modules/electron-osx-sign} --icon=./app/assets/img/icons/mac/icon.icns --platform=darwin --appCategoryType='public.app-category.utilities' --appBundleId='co.za.ragingflame.nodetube' --prune=true --arch=x64 --sign='Mac Developer: qawemlilo@gmail.com (Y82W7MPY89)' --overwrite"
+    "package:sign": "electron-osx-sign ./build/NodeTube-darwin-x64/NodeTube.app"
   },
   "repository": "https://github.com/qawemlilo/nodetube-desktop",
   "keywords": [

@@ -2,7 +2,6 @@
 
 const Backbone = require('backbone');
 const moment = require('moment');
-const path = require('path');
 const config = require('../config');
 
 const LinkView = Backbone.View.extend({
@@ -32,7 +31,7 @@ const LinkView = Backbone.View.extend({
 
 
   initialize: function () {
-    this.model.on('change', (model, val, opts) => {
+    this.listenTo(this.model, 'change:playing', (model, val, opts) => {
       if (model.attributes.playing) {
         this.$el.addClass('active');
       }
@@ -41,7 +40,7 @@ const LinkView = Backbone.View.extend({
       }
     });
 
-    this.model.on('destroy', (model, val, opts) => {
+    this.listenTo(this.model, 'destroy', (model, val, opts) => {
       this.remove();
     });
   },

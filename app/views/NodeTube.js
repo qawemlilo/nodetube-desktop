@@ -43,13 +43,12 @@ const Menu = Backbone.View.extend({
 
         this.currentVideo = model;
 
-        this.renderVideo(model);
+        this.renderVideo();
         this.view = 'playing';
       }
     };
 
-    this.collection.on('change:playing', handleVideoPLay);
-
+    this.listenTo(this.collection, 'change:playing', handleVideoPLay);
 
     this.renderToolBar();
     this.renderHome();
@@ -64,14 +63,14 @@ const Menu = Backbone.View.extend({
     if (view === 'menu') {
       this.currentSidebar = new this.Menu();
 
-      this.currentSidebar.on('newview', (view) => {
-        if (view === 'menu-home') {
+      this.listenTo(this.currentSidebar, 'newview', (newview) => {
+        if (newview === 'menu-home') {
           this.renderHome();
         }
-        if (view === 'menu-favourites') {
+        if (newview === 'menu-favourites') {
           this.renderFavourites();
         }
-        if (view === 'menu-recent') {
+        if (newview === 'menu-recent') {
           this.renderRecent();
         }
       });
@@ -89,11 +88,11 @@ const Menu = Backbone.View.extend({
   renderToolBar: function () {
     let toolbar = new this.ToolBar();
 
-    toolbar.on('download', (url) => {
+    this.listenTo(toolbar, 'download', (url) => {
       this.trigger('download', url);
     });
 
-    toolbar.on('gohome', (url) => {
+    this.listenTo(toolbar, 'gohome', (url) => {
       if (this.currentVideo) {
         this.currentVideo.set('playing', false);
         this.currentVideo = null;
@@ -101,7 +100,7 @@ const Menu = Backbone.View.extend({
       this.renderHome();
     });
 
-    toolbar.on('open-settings', (url) => {
+    this.listenTo(toolbar, 'open-settings', (url) => {
       this.trigger('open-settings');
     });
   },
@@ -119,14 +118,16 @@ const Menu = Backbone.View.extend({
   },
 
 
-  renderVideo: function (model) {
+  renderVideo: function (id) {
 
     if (this.currentView) {
       this.currentView.remove();
     }
 
+    let model = this.collection.get(id);
+
     this.currentView = new PlayerView({
-      model: model
+      model: this.currentVideo
     });
 
     if (this.view !== 'playing') {

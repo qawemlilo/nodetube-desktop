@@ -2,7 +2,6 @@
 
 const Backbone = require('backbone');
 const moment = require('moment');
-const fs = require('fs');
 const config = require('../config');
 
 const VideoView = Backbone.View.extend({
@@ -57,15 +56,7 @@ const VideoView = Backbone.View.extend({
 
 
     remove: function (e) {
-      let video = this.model.attributes.path;
-
-      this.model.destroy({
-        force: true,
-        success: function () {
-          fs.unlinkSync(video);
-        }
-      });
-
+      this.model.destroy({force: true});
       this.$el.remove();
     }
 });

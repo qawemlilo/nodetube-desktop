@@ -4,11 +4,11 @@ const {app, ipcMain, BrowserWindow, Menu, shell, dialog, autoUpdater, Tray} = re
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
-const request = require('request');
 const download = require('./app/lib/download');
 const config = require('./app/config');
 const crashReporter = require('./app/crash-reporter')
 const settings = require('electron-settings');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -31,6 +31,9 @@ function createRootDir() {
 }
 
 
+createRootDir();
+
+
 require('electron-context-menu')({
     prepend: (params, browserWindow) => [{
         label: 'Rainbow',
@@ -45,6 +48,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 450,
+    icon: config.APP_ICON,
     acceptFirstMouse: true,
     center: true,
     fullscreenable: true,
@@ -180,6 +184,7 @@ app.on('activate', function () {
 });
 
 
+
 ipcMain.on('download', (event, url) => {
   let globalInfo = null;
   let prev = 0;
@@ -205,8 +210,6 @@ ipcMain.on('download', (event, url) => {
       mainWindow ? mainWindow.webContents.send('complete', doc) : '';
     }
   });
-
-
 
   video.on('info', function(info, data) {
     globalInfo = {
@@ -240,6 +243,7 @@ ipcMain.on('play', (event, uid) => {
   }
 });
 
+
 ipcMain.on('show-window', () => {
   showWindow()
 });
@@ -249,6 +253,7 @@ ipcMain.on('set-videos-dir', (e, val) => {
   settings.set('app.videos_dir', val);
 });
 
+
 ipcMain.on('open-settings', (e) => {
   createSettingsWindow();
 });
@@ -256,6 +261,19 @@ ipcMain.on('open-settings', (e) => {
 
 ipcMain.on('set-video-quality', (e, val) => {
   settings.set('app.video_quality', val);
+});
+
+
+ipcMain.on('delete-video', (e, path) => {
+  fs.stat(path, function(err, stat) {
+    if (!err) {
+      fs.unlinkSync(path);
+      console.log('file deleted ', path)
+    }
+    else {
+      console.error(err.message);
+    }
+  });
 });
 
 ipcMain.on('select-dir', (event) => {
@@ -275,30 +293,46 @@ ipcMain.on('select-dir', (event) => {
 
 
 function loadMainMenu() {
+
   let template = [{
-      label: "Application",
-      submenu: [
-          { label: "About Application", click: () => { shell.openExternal(config.HOME_PAGE_URL) } },
-          { label: "Preferences", click: () => createSettingsWindow() },
-          { label: "Support", click: () => { shell.openExternal(config.GITHUB_URL_ISSUES) } },
-          { label: `Check for updates (current: v${config.APP_VERSION})`, click: () => { shell.openExternal(config.UPDATES_URL) } },
-          { type: "separator" },
-          { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-      ]}, {
-      label: "Edit",
-      submenu: [
-          { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-          { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-          { type: "separator" },
-          { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-          { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-          { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-          { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-      ]}
-  ];
+    label: config.APP_NAME,
+    submenu: [
+      { label: "About Application", click: () => { shell.openExternal(config.HOME_PAGE_URL) } },
+      { label: "Preferences", click: () => createSettingsWindow() },
+      { label: "Support", click: () => { shell.openExternal(config.GITHUB_URL_ISSUES) } },
+      { label: `Check for updates (current: v${config.APP_VERSION})`, click: () => { shell.openExternal(config.UPDATES_URL) } },
+      { type: "separator" },
+      { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+    ]
+  }];
+
+  if (process.platform === 'darwin') {
+    template = [{
+        label: config.APP_NAME,
+        submenu: [
+            { label: "About " +  config.APP_NAME, click: () => { shell.openExternal(config.HOME_PAGE_URL) } },
+            { label: "Preferences", click: () => createSettingsWindow() },
+            { label: "Support", click: () => { shell.openExternal(config.GITHUB_URL_ISSUES) } },
+            { label: `Check for updates (current: v${config.APP_VERSION})`, click: () => { shell.openExternal(config.UPDATES_URL) } },
+            { type: "separator" },
+            { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+        ]}, {
+        label: "Edit",
+        submenu: [
+            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+            { type: "separator" },
+            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+        ]}
+    ];
+  }
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
+
 
 function createTray() {
   if (tray) return;
@@ -340,6 +374,7 @@ const toggleWindow = () => {
   }
 }
 
+
 function showWindow() {
   if (!mainWindow) {
     createWindow();
@@ -351,6 +386,7 @@ function showWindow() {
   notificationsWindow.focus();
 }
 
+
 function alertError(win, message, detail) {
   let index = dialog.showMessageBox(win, {
     type: 'info',
@@ -361,25 +397,3 @@ function alertError(win, message, detail) {
     icon: path.join(__dirname,'app', 'assets', 'img', 'icons', 'png', '48x48.png')
   });
 }
-
-
-/*
-function checkForUpdates() {
-  if (config.IS_PRODUCTION && process.platform === 'darwin') {
-    autoUpdater.setFeedURL(`${config.UPDATES_API}?v=v${config.APP_VERSION}`);
-    autoUpdater.addListener("update-downloaded", function(event, releaseNotes, releaseName, releaseDate, updateURL) {
-      let index = dialog.showMessageBox(mainWindow, {
-        type: 'info',
-        buttons: ['Restart', 'Later'],
-        title: "New Update",
-        message: 'The new version has been downloaded. Please restart the application to apply the updates.',
-        detail: releaseName + "\n\n" + releaseNotes
-      });
-      if (index === 1) {
-        return false;
-      }
-      autoUpdater.quitAndInstall();
-    });
-    autoUpdater.addListener("error", function(error) {});
-  }
-}*/

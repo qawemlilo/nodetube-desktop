@@ -26,15 +26,15 @@ module.exports = {
   CRASH_REPORT_URL: '',
 
   APP_FILE_ICON: '',
-  APP_ICON: path.join(__dirname, 'assets', 'img', 'icons', 'mac', 'icon.icns'),
+  APP_ICON: getAppIcon(),
   PLACEHOLDER_ICON: path.join(__dirname, 'assets', 'img', 'placeholder.png'),
 
   GITHUB_URL: 'https://github.com/qawemlilo/nodetube-desktop',
   GITHUB_URL_ISSUES: 'https://github.com/qawemlilo/nodetube-desktop/issues',
   HOME_PAGE_URL: 'https://github.com/qawemlilo/nodetube-desktop',
   UPDATES_URL: 'https://github.com/qawemlilo/nodetube-desktop/releases',
-  UPDATES_API: 'https://nodetube.ragingflame.co.za/updates/latest',
-  CRASH_REPORT_URL: 'https://nodetube.ragingflame.co.za/crash-report'
+  UPDATES_API: 'https://video-download.herokuapp.com/updates/latest',
+  CRASH_REPORT_URL: 'https://video-download.herokuapp.com/crash-report'
 };
 
 
@@ -57,6 +57,27 @@ function getRootDir() {
 
 function getImagesDir() {
   return path.join(getRootDir(), 'images');
+}
+
+
+function getAppIcon() {
+  let icon = '';
+
+  switch (process.platform) {
+    case 'win32':
+      icon = path.join(__dirname, 'assets', 'img', 'icons', 'win', 'icon.ico');
+    break;
+    case 'linux':
+      icon = path.join(__dirname, 'assets', 'img', 'icons', 'png', '256x256.png');
+    break;
+    case 'darwin':
+      icon = path.join(__dirname, 'assets', 'img', 'icons', 'png', '256x256.png');
+    break;
+    default:
+     icon = path.join(__dirname, 'assets', 'img', 'icons', 'png', '256x256.png');
+  }
+
+  return icon;
 }
 
 

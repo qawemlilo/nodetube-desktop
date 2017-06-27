@@ -14,6 +14,9 @@ const Player = Backbone.View.extend({
   },
 
 
+  active: false,
+
+
   template: function (model) {
     let klass = 'icon icon-heart-empty favourite-icon hidden';
 
@@ -33,14 +36,21 @@ const Player = Backbone.View.extend({
 
 
     initialize: function () {
+      this.listenTo(this.model, 'sync', (model, val, opts) => {
+        this.active = false;
+      });
+
       this.render();
     },
 
 
     render: function() {
       this.$el.html(this.template(this.model.attributes));
-      this.model.set('watched', true);
-      this.model.save();
+
+      if (!this.model.watched) {
+        this.model.save({watched: true});
+      }
+
       return this;
     },
 
@@ -56,6 +66,12 @@ const Player = Backbone.View.extend({
 
 
     favToggle: function(e) {
+      if (this.active) {
+        return false;
+      }
+
+      this.active = true;
+
       let fav = this.model.attributes.favourite ? false : true;
       let el = this.$('.favourite-icon');
 
@@ -66,9 +82,7 @@ const Player = Backbone.View.extend({
         el.removeClass('icon-heart red').addClass('icon-heart-empty');
       }
 
-      this.model.set('favourite', fav);
-
-      this.model.save();
+      this.model.save({'favourite': fav});
     }
 });
 

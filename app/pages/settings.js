@@ -2,7 +2,6 @@
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
-const path = require('path');
 const config = require('../config');
 const settings = require('electron-settings');
 
@@ -30,11 +29,11 @@ const PreferencesView = Backbone.View.extend({
 
 
   initialize: function () {
-    this.model.on('change:quality', (model) => {
+    this.listenTo(this.model, 'change:quality', (model) => {
       this.$el.find('#videoQuality').val(model.get('quality'));
     });
 
-    this.model.on('change:directory', (model) => {
+    this.listenTo(this.model, 'change:directory', (model) => {
       this.$el.find('#videosDir').attr('placeholder', model.get('directory'));
     });
 

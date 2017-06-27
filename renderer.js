@@ -3,19 +3,14 @@
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
-const Tray = electron.Tray;
 const Database = require('./app/database');
-const path = require('path');
 
 window.$ = window.jQuery = window.require('jquery');
 window.Backbone = window.require('backbone');
 Backbone.sync = window.require('./app/lib/backbone.sync')(Database);
 
 
-// models
 const { Video, VideosCollection } = require('./app/models/Video');
-
-//views
 const VideosList = require('./app/views/VideosList');
 const PlayList = require('./app/views/PlayList');
 const ToolBar = require('./app/views/ToolBar');
@@ -27,6 +22,13 @@ Database.getAll()
 .then(function (docs) {
   // instantiate collection
   let vidoescollection = new VideosCollection(docs);
+
+  vidoescollection.on('destroy', function (model, collection, opts) {
+    if (opts.force) {
+      ipcRenderer.send('delete-video', model.attributes.path);
+    }
+  });
+
 
   let nodetube = new NodeTube({
     collection: vidoescollection,
@@ -58,19 +60,23 @@ Database.getAll()
   ipcRenderer.on('complete', function (event, data) {
     Database.create(data)
     .then(function () {
-      vidoescollection.fetch({
-        success: (collection, response, options) => {
-          if (vidoescollection.origModels) {
-            vidoescollection.origModels = collection.clone().models;
-          }
+      if (nodetube.view && nodetube.view !== 'playing') {
+        vidoescollection.fetch({
+          success: (collection, response, options) => {
+            if (vidoescollection.origModels) {
+              vidoescollection.origModels = collection.clone().models;
+            }
 
-          vidoescollection.pager();
-        }
-      });
+            vidoescollection.pager();
+          }
+        });
+      }
     })
     .catch(function (error) {
       console.error(error)
     })
   });
 })
-.catch(function () {});
+.catch(function (error) {
+  console.error(error)
+});

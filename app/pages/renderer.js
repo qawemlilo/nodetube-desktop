@@ -2,11 +2,13 @@
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
-const path = require('path');
+const DB_NAME = 'NodeTubeDownloads';
 
 window.$ = window.jQuery = window.require('jquery');
 window.Backbone = window.require('backbone');
 
+
+// extend localStorage functionality
 Storage.prototype.save = function(key, obj) {
     return this.setItem(key, JSON.stringify(obj))
 }
@@ -19,8 +21,6 @@ Storage.prototype.remove = function(key) {
     this.removeItem(key);
 }
 
-
-const DB_NAME = 'NodeTubeDownloads';
 
 const Download = Backbone.Model.extend({
   defaults: {
@@ -53,11 +53,11 @@ const DownloadView = Backbone.View.extend({
 
 
     initialize: function () {
-      this.model.on('change:progress', (model) => {
+      this.listenTo(this.model, 'change:progress', (model) => {
         this.$el.find('.progress-bar').val(model.get('progress'));
       });
 
-      this.model.on('complete', (model) => {
+      this.listenTo(this.model, 'complete', (model) => {
         this.$el.find('.activity').text('Download complete!');
       });
     },
@@ -106,15 +106,15 @@ const DownloadsListView = Backbone.View.extend({
 
 
   initialize: function () {
-    this.collection.on('add', (model, collection, opts) => {
+    this.listenTo(this.collection, 'add', (model, collection, opts) => {
       this.render();
     });
 
-    this.collection.on('reset', (model, collection, opts) => {
+    this.listenTo(this.collection, 'reset', (model, collection, opts) => {
       this.render();
     });
 
-    this.collection.on('refresh', () => {
+    this.listenTo(this.collection, 'refresh', () => {
       this.render();
     });
 
