@@ -1,8 +1,7 @@
 <h1 align="center">
-  <a href="https://github.com/qawemlilo/nodetube-desktop"><img src="https://raw.githubusercontent.com/qawemlilo/nodetube-desktop/master/app/assets/img/tv-icon.png" alt="NodeTube" width="200"></a>
+  <a href="hhttps://nodetube.ragingflame.co.za"><img src="https://raw.githubusercontent.com/qawemlilo/nodetube-desktop/master/app/assets/img/tv-icon.png" alt="NodeTube" width="200"></a>
   <br>
   NodeTube
-  <br>
   <br>
 </h1>
 
@@ -11,19 +10,20 @@
 NodeTube is a desktop app for downloading and watching YouTube videos.
 
 ### Stack
- - Electron - Cross platform framework for native platforms
- - Photon - UI framework
- - Backbone - UI framework
- - jQuery - Dom operations
- - NEDB - embedded database
- - ytdl-core  - YouTube downloader
+ - [Electron](https://github.com/electron/electron) - Cross platform framework for native platforms
+ - [Photon](https://github.com/connors/photon) - UI framework
+ - [Backbone](http://github.com/jashkenas/backbone) - UI framework
+ - [jQuery](https://github.com/jquery/jquery) - Dom operations
+ - [NEDB](https://github.com/louischatriot/nedb) - embedded database
+ - [ytdl-core](https://github.com/fent/node-ytdl-core)  - YouTube downloader
 
-### Todo
- - Custom video controls
- - Tagging - Ability to create tags for video
- - Create multiple skins that are configurable
- - Make the UI theme configurable
- - Ability to cast videos
+### Feature List
+ - [x] Download progress bar
+ - [x] Settings - Video quality, videos directory
+ - [x] Video Favourating
+ - [ ] Suggested videos
+ - [ ] Scheduled downloads
+ - [ ] TV casting
 
 
 
